@@ -1,9 +1,8 @@
 'use client';
 
-import { isSameDay, format } from 'date-fns';
-import { Task } from '@/app/types/task';
-
+import { format, isSameDay } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { Task } from '@/app/types/task';
 
 interface CalendarMobileDayCellProps {
   day: Date;
@@ -20,63 +19,107 @@ const CalendarMobileDayCell: React.FC<CalendarMobileDayCellProps> = ({
   isCurrentMonth,
   onDateSelect,
 }) => {
-  let bgClass = '';
-  let hoverClass = '';
-  let inlineBgStyle: React.CSSProperties | undefined = undefined;
+  let inlineStyle: React.CSSProperties = {
+    padding: '0.5rem',
+    fontSize: '0.875rem',
+    borderRadius: '9999px',
+    width: '2.5rem',
+    height: '2.5rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: '1px',
+    opacity: isCurrentMonth ? 1 : 0.4,
+    transition: 'background-color 0.2s, border-color 0.2s, opacity 0.2s',
+    color: isCurrentMonth ? 'inherit' : '#9ca3af', // gray-400
+  };
 
-  if (tasks.length === 1) {
+  if (isSelected) {
+    inlineStyle = {
+      ...inlineStyle,
+      backgroundColor: '#3b82f6', // blue-500
+      borderColor: '#3b82f6',
+      color: '#ffffff',
+    };
+  } else if (tasks.length === 0) {
+    inlineStyle = {
+      ...inlineStyle,
+      borderColor: window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? '#4b5563' // gray-700
+        : '#d1d5db', // gray-300
+      backgroundColor: 'transparent',
+      ['--hover-bg' as string]: window.matchMedia(
+        '(prefers-color-scheme: dark)'
+      ).matches
+        ? '#1e3a8a' // dark:hover:bg-blue-900
+        : '#dbeafe', // hover:bg-blue-100
+    };
+  } else if (tasks.length === 1) {
     const task = tasks[0];
     if (task.completed) {
-      bgClass = 'bg-green-600';
-      hoverClass = 'hover:bg-green-700';
+      inlineStyle = {
+        ...inlineStyle,
+        backgroundColor: 'var(--hover-bg, #16a34a)', // green-600
+        borderColor: '#16a34a',
+        ['--hover-bg' as string]: '#15803d', // hover:bg-green-700
+      };
     } else {
-      bgClass = 'bg-yellow-500';
-      hoverClass = 'hover:bg-yellow-600';
+      inlineStyle = {
+        ...inlineStyle,
+        backgroundColor: 'var(--hover-bg, #eab308)', // yellow-500
+        borderColor: '#eab308',
+        ['--hover-bg' as string]: '#ca8a04', // hover:bg-yellow-600
+      };
     }
-  } else if (tasks.length > 1) {
+  } else {
     const completedCount = tasks.filter((task) => task.completed).length;
     const percentCompleted = Math.round((completedCount / tasks.length) * 100);
     const percentNotCompleted = 100 - percentCompleted;
 
     if (percentCompleted === 100) {
-      bgClass = 'bg-green-600';
-      hoverClass = 'hover:bg-green-700';
+      inlineStyle = {
+        ...inlineStyle,
+        backgroundColor: 'var(--hover-bg, #16a34a)', // green-600
+        borderColor: '#16a34a',
+        ['--hover-bg' as string]: '#15803d', // hover:bg-green-700
+      };
     } else if (percentNotCompleted === 100) {
-      bgClass = 'bg-yellow-500';
-      hoverClass = 'hover:bg-yellow-600';
+      inlineStyle = {
+        ...inlineStyle,
+        backgroundColor: 'var(--hover-bg, #eab308)', // yellow-500
+        borderColor: '#eab308',
+        ['--hover-bg' as string]: '#ca8a04', // hover:bg-yellow-600
+      };
     } else {
-      hoverClass = 'hover:opacity-90';
-      inlineBgStyle = {
+      inlineStyle = {
+        ...inlineStyle,
         background: `linear-gradient(135deg, #facc15 ${percentNotCompleted}%, #16a34a ${percentNotCompleted}%)`,
+        borderColor: '#eab308',
+        ['--hover-opacity' as string]: '0.9',
       };
     }
   }
-
-  const baseClass = isSelected
-    ? 'bg-blue-500 text-white border-blue-500'
-    : tasks.length === 0
-    ? 'border-gray-300 dark:border-gray-700'
-    : `${bgClass} border-${bgClass.split('-')[1]}-500`;
 
   const handleClick = () => {
     onDateSelect(isSelected ? null : day);
   };
 
   return (
-    <button
-      className={`p-2 text-sm rounded-full w-10 h-10 flex items-center justify-center
-        ${baseClass}
-        ${isCurrentMonth ? '' : 'text-gray-400'}
-        ${
-          tasks.length === 0
-            ? 'hover:bg-blue-100 dark:hover:bg-blue-900'
-            : hoverClass
-        } transition`}
-      style={inlineBgStyle}
-      onClick={handleClick}
-    >
-      {format(day, 'd', { locale: ru })}
-    </button>
+    <>
+      <style jsx>{`
+        .calendar-mobile-day-cell:hover {
+          background-color: var(--hover-bg);
+          opacity: var(--hover-opacity, 1);
+        }
+      `}</style>
+      <button
+        className='calendar-mobile-day-cell rounded-full'
+        style={inlineStyle}
+        onClick={handleClick}
+      >
+        {format(day, 'd', { locale: ru })}
+      </button>
+    </>
   );
 };
 
