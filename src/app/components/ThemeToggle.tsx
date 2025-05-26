@@ -30,7 +30,9 @@ export const ThemeToggle = () => {
   return (
     <motion.button
       onClick={toggleTheme}
-      className='w-10 h-10 p-2 mx-4 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 flex items-center justify-center transition-colors'
+      className='w-10 h-10 p-2 mx-4 rounded-full border border-gray-300
+       dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800
+        dark:text-gray-200 s transition-colors'
       aria-label='Toggle theme'
       whileTap={{ scale: 0.9 }}
       whileHover={{ scale: 1.05 }}

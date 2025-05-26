@@ -29,7 +29,7 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.3 }}
       onClick={() => onDateSelect(day)}
-      className={`p-4 rounded-lg cursor-pointer border
+      className={`p-4 rounded-lg cursor-pointer border 
         ${
           isSelected
             ? 'border-blue-500 bg-blue-50 dark:bg-blue-900'
@@ -41,7 +41,7 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({
       <div className='font-semibold mb-2'>
         {format(day, 'd MMM', { locale: ru })}{' '}
       </div>
-      <div className='space-y-2 max-h-48 overflow-y-auto'>
+      <div className='space-y-2 max-h-48 overflow-y-auto overflow-x-hidden'>
         {tasks.length === 0 ? (
           <p className='text-gray-400 dark:text-gray-500 text-sm'>Нет задач</p>
         ) : (
