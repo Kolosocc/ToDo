@@ -1,10 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale'; // Русская локализация
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import { useIsDesktop } from '@/app/hooks/useIsDesktop';
 
 interface CalendarHeaderProps {
   currentMonth: Date;
@@ -15,8 +13,6 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   currentMonth,
   onMonthChange,
 }) => {
-  const isDesktop = useIsDesktop();
-
   return (
     <div className='flex justify-between items-center mb-2'>
       <button

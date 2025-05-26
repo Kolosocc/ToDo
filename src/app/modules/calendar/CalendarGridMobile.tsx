@@ -9,12 +9,12 @@ import {
   endOfMonth,
   startOfWeek,
 } from 'date-fns';
-import { ru } from 'date-fns/locale'; // Импортируем русскую локализацию
+import { ru } from 'date-fns/locale';
 
 interface CalendarGridMobileProps {
-  currentMonth: Date; // Текущий месяц
-  selectedDate: Date; // Выбранная дата
-  onDateSelect: (date: Date) => void; // Обработчик выбора даты
+  currentMonth: Date;
+  selectedDate: Date | null; // Updated to allow null
+  onDateSelect: (date: Date | null) => void;
 }
 
 const CalendarGridMobile: React.FC<CalendarGridMobileProps> = ({
@@ -26,8 +26,15 @@ const CalendarGridMobile: React.FC<CalendarGridMobileProps> = ({
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart, { weekStartsOn: 1 });
   const endDate = endOfMonth(monthEnd);
-
   const weekdays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+
+  const handleDateClick = (date: Date) => {
+    if (selectedDate && isSameDay(date, selectedDate)) {
+      onDateSelect(null); // Deselect on second click
+    } else {
+      onDateSelect(date);
+    }
+  };
 
   const days = [];
   let day = startDate;
@@ -39,12 +46,16 @@ const CalendarGridMobile: React.FC<CalendarGridMobileProps> = ({
         <button
           key={cloneDay.toISOString()}
           className={`p-2 text-sm rounded-full w-10 h-10
-            ${isSameDay(cloneDay, selectedDate) ? 'bg-blue-500 text-white' : ''}
+            ${
+              selectedDate && isSameDay(cloneDay, selectedDate)
+                ? 'bg-blue-500 text-white'
+                : ''
+            }
             ${!isSameMonth(cloneDay, monthStart) ? 'text-gray-400' : ''}
             hover:bg-blue-100 dark:hover:bg-blue-900 transition`}
-          onClick={() => onDateSelect(cloneDay)}
+          onClick={() => handleDateClick(cloneDay)}
         >
-          {format(cloneDay, 'd', { locale: ru })}{' '}
+          {format(cloneDay, 'd', { locale: ru })}
         </button>
       );
       day = addDays(day, 1);
@@ -53,7 +64,6 @@ const CalendarGridMobile: React.FC<CalendarGridMobileProps> = ({
 
   return (
     <div className='grid grid-cols-7 gap-1'>
-      {/* Заголовки дней недели */}
       {weekdays.map((weekday, index) => (
         <div
           key={index}
@@ -62,7 +72,6 @@ const CalendarGridMobile: React.FC<CalendarGridMobileProps> = ({
           {weekday}
         </div>
       ))}
-      {/* Сетка дней */}
       {days}
     </div>
   );

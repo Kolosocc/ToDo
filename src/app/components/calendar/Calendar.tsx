@@ -6,8 +6,8 @@ import CalendarMobile from './CalendarMobile';
 import { Task } from '@/app/types/task';
 
 interface CalendarProps {
-  selectedDate: Date;
-  onDateSelect: (date: Date) => void;
+  selectedDate: Date | null;
+  onDateSelect: (date: Date | null) => void;
   currentMonth: Date;
   onMonthChange: (offset: number) => void;
   tasks: Task[];

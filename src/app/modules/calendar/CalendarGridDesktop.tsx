@@ -8,15 +8,15 @@ import {
   isSameMonth,
   isSameDay,
 } from 'date-fns';
-import { ru } from 'date-fns/locale'; // Русская локализация
+import { ru } from 'date-fns/locale';
 import { Task } from '@/app/types/task';
 import CalendarDayCell from './CalendarDayCell';
 
 interface CalendarGridDesktopProps {
   currentMonth: Date;
   tasks: Task[];
-  selectedDate: Date;
-  onDateSelect: (date: Date) => void;
+  selectedDate: Date | null;
+  onDateSelect: (date: Date | null) => void;
 }
 
 const CalendarGridDesktop: React.FC<CalendarGridDesktopProps> = ({
@@ -26,19 +26,18 @@ const CalendarGridDesktop: React.FC<CalendarGridDesktopProps> = ({
   onDateSelect,
 }) => {
   const [calendarDays, setCalendarDays] = useState<Date[]>([]);
+  const weekdays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
   useEffect(() => {
     const monthStart = startOfMonth(currentMonth);
-    const startDate = startOfWeek(monthStart, { weekStartsOn: 1 }); // Начинаем с понедельника
+    const startDate = startOfWeek(monthStart, { weekStartsOn: 1 });
     const days: Date[] = [];
-    // Генерируем только 14 дней (2 недели)
     for (let i = 0; i < 21; i++) {
       days.push(addDays(startDate, i));
     }
     setCalendarDays(days);
   }, [currentMonth]);
 
-  // Фильтрация задач по дате
   const tasksByDate = (date: Date) => {
     return tasks.filter(
       (t) =>
@@ -47,12 +46,8 @@ const CalendarGridDesktop: React.FC<CalendarGridDesktopProps> = ({
     );
   };
 
-  // Названия дней недели на русском
-  const weekdays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
-
   return (
     <div className='grid grid-cols-7 gap-4 mt-4'>
-      {/* Заголовки дней недели */}
       {weekdays.map((weekday, index) => (
         <div
           key={index}
@@ -61,15 +56,14 @@ const CalendarGridDesktop: React.FC<CalendarGridDesktopProps> = ({
           {weekday}
         </div>
       ))}
-      {/* Сетка дней */}
       {calendarDays.map((day) => (
         <CalendarDayCell
           key={day.toISOString()}
           day={day}
           tasks={tasksByDate(day)}
-          isSelected={isSameDay(day, selectedDate)}
+          isSelected={selectedDate ? isSameDay(day, selectedDate) : false}
           isCurrentMonth={isSameMonth(day, currentMonth)}
-          onDateSelect={onDateSelect}
+          onDateSelect={onDateSelect} // Pass the parent's onDateSelect directly
         />
       ))}
     </div>

@@ -8,8 +8,8 @@ import { Task } from '@/app/types/task';
 interface CalendarDesktopProps {
   currentMonth: Date;
   tasks: Task[];
-  selectedDate: Date;
-  onDateSelect: (date: Date) => void;
+  selectedDate: Date | null;
+  onDateSelect: (date: Date | null) => void;
   onMonthChange: (offset: number) => void;
 }
 

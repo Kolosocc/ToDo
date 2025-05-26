@@ -1,15 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-
 import CalendarGridMobile from '@/app/modules/calendar/CalendarGridMobile';
 import CalendarHeader from '@/app/modules/calendar/CalendarHeader';
 
 interface CalendarMobileProps {
   currentMonth: Date;
   onMonthChange: (offset: number) => void;
-  selectedDate: Date;
-  onDateSelect: (date: Date) => void;
+  selectedDate: Date | null; // Updated to allow null
+  onDateSelect: (date: Date | null) => void;
 }
 
 const CalendarMobile: React.FC<CalendarMobileProps> = ({
@@ -19,7 +18,7 @@ const CalendarMobile: React.FC<CalendarMobileProps> = ({
   onDateSelect,
 }) => {
   return (
-    <div className='p-4 rounded-xl bg-white  dark:bg-gray-800 '>
+    <div className='p-4 rounded-xl bg-white dark:bg-gray-800'>
       <CalendarHeader
         currentMonth={currentMonth}
         onMonthChange={onMonthChange}

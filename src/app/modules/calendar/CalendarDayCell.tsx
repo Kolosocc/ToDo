@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { format, isSameDay } from 'date-fns';
-import { ru } from 'date-fns/locale'; // Русская локализация
+import { ru } from 'date-fns/locale';
 import { Task } from '@/app/types/task';
 
 interface CalendarDayCellProps {
@@ -10,7 +10,7 @@ interface CalendarDayCellProps {
   tasks: Task[];
   isSelected: boolean;
   isCurrentMonth: boolean;
-  onDateSelect: (date: Date) => void;
+  onDateSelect: (date: Date | null) => void;
 }
 
 const MAX_DESC_LENGTH = Number(process.env.NEXT_PUBLIC_THEME_KEY) || 100;
@@ -39,7 +39,7 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({
         hover:border-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900`}
     >
       <div className='font-semibold mb-2'>
-        {format(day, 'd MMM', { locale: ru })}{' '}
+        {format(day, 'd MMM', { locale: ru })}
       </div>
       <div className='space-y-2 max-h-48 overflow-y-auto overflow-x-hidden'>
         {tasks.length === 0 ? (
