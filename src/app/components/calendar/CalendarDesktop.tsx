@@ -20,6 +20,7 @@ const CalendarDesktop: React.FC<CalendarDesktopProps> = ({
   onDateSelect,
   onMonthChange,
 }) => {
+  console.log(tasks);
   return (
     <div className='p-4 rounded-xl bg-white dark:bg-gray-800 '>
       <CalendarHeader

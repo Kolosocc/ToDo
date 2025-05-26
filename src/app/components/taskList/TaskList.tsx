@@ -55,12 +55,12 @@ export const TaskList: React.FC<TaskListProps> = ({
                   onClick={() => onToggleComplete(task.id)}
                   className={`p-2 text-white rounded transition ${
                     task.completed
-                      ? 'bg-yellow-500 hover:bg-yellow-600'
-                      : 'bg-green-500 hover:bg-green-600'
+                      ? 'bg-green-500 hover:bg-green-600'
+                      : 'bg-yellow-500 hover:bg-yellow-600'
                   }`}
                   title={task.completed ? 'Отменить выполнение' : 'Выполнить'}
                 >
-                  {task.completed ? <FiX size={16} /> : <FiCheck size={16} />}
+                  {task.completed ? <FiCheck size={16} /> : <FiX size={16} />}
                 </button>
                 <button
                   onClick={() => onEdit(task)}

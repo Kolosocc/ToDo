@@ -3,12 +3,14 @@
 import { useState } from 'react';
 import CalendarGridMobile from '@/app/modules/calendar/CalendarGridMobile';
 import CalendarHeader from '@/app/modules/calendar/CalendarHeader';
+import { Task } from '@/app/types/task';
 
 interface CalendarMobileProps {
   currentMonth: Date;
   onMonthChange: (offset: number) => void;
   selectedDate: Date | null; // Updated to allow null
   onDateSelect: (date: Date | null) => void;
+  tasks: Task[];
 }
 
 const CalendarMobile: React.FC<CalendarMobileProps> = ({
@@ -16,6 +18,7 @@ const CalendarMobile: React.FC<CalendarMobileProps> = ({
   onMonthChange,
   selectedDate,
   onDateSelect,
+  tasks,
 }) => {
   return (
     <div className='p-4 rounded-xl bg-white dark:bg-gray-800'>
@@ -24,6 +27,7 @@ const CalendarMobile: React.FC<CalendarMobileProps> = ({
         onMonthChange={onMonthChange}
       />
       <CalendarGridMobile
+        tasks={tasks}
         currentMonth={currentMonth}
         selectedDate={selectedDate}
         onDateSelect={onDateSelect}

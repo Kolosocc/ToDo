@@ -32,6 +32,7 @@ const Calendar: React.FC<CalendarProps> = ({
     />
   ) : (
     <CalendarMobile
+      tasks={tasks}
       currentMonth={currentMonth}
       onMonthChange={onMonthChange}
       selectedDate={selectedDate}

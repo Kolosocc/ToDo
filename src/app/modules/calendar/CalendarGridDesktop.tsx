@@ -5,10 +5,11 @@ import {
   startOfMonth,
   startOfWeek,
   addDays,
-  isSameMonth,
+  format,
   isSameDay,
+  isSameMonth,
 } from 'date-fns';
-import { ru } from 'date-fns/locale';
+
 import { Task } from '@/app/types/task';
 import CalendarDayCell from './CalendarDayCell';
 
@@ -32,18 +33,29 @@ const CalendarGridDesktop: React.FC<CalendarGridDesktopProps> = ({
     const monthStart = startOfMonth(currentMonth);
     const startDate = startOfWeek(monthStart, { weekStartsOn: 1 });
     const days: Date[] = [];
-    for (let i = 0; i < 21; i++) {
+    for (let i = 0; i < 30; i++) {
+      // Покрываем до 5 недель
       days.push(addDays(startDate, i));
     }
     setCalendarDays(days);
   }, [currentMonth]);
 
-  const tasksByDate = (date: Date) => {
-    return tasks.filter(
-      (t) =>
-        isSameDay(new Date(t.createdAt), date) &&
-        isSameMonth(new Date(t.createdAt), currentMonth)
-    );
+  const tasksByDate = (date: Date): Task[] => {
+    // Форматируем дату в YYYY-MM-DD
+    const targetDateStr = format(date, 'yyyy-MM-dd');
+    const targetMonthStr = format(date, 'yyyy-MM');
+
+    return tasks.filter((t) => {
+      // Извлекаем дату из createdAt
+      const taskDate = new Date(t.createdAt);
+      const taskDateStr = format(taskDate, 'yyyy-MM-dd');
+      const taskMonthStr = format(taskDate, 'yyyy-MM');
+
+      const isSameDayMatch = taskDateStr === targetDateStr;
+      const isSameMonthMatch = taskMonthStr === targetMonthStr;
+
+      return isSameDayMatch && isSameMonthMatch;
+    });
   };
 
   return (
@@ -56,16 +68,20 @@ const CalendarGridDesktop: React.FC<CalendarGridDesktopProps> = ({
           {weekday}
         </div>
       ))}
-      {calendarDays.map((day) => (
-        <CalendarDayCell
-          key={day.toISOString()}
-          day={day}
-          tasks={tasksByDate(day)}
-          isSelected={selectedDate ? isSameDay(day, selectedDate) : false}
-          isCurrentMonth={isSameMonth(day, currentMonth)}
-          onDateSelect={onDateSelect} // Pass the parent's onDateSelect directly
-        />
-      ))}
+      {calendarDays.map((day) => {
+        const dayTasks = tasksByDate(day);
+
+        return (
+          <CalendarDayCell
+            key={day.toISOString()}
+            day={day}
+            tasks={dayTasks}
+            isSelected={selectedDate ? isSameDay(day, selectedDate) : false}
+            isCurrentMonth={isSameMonth(day, currentMonth)}
+            onDateSelect={onDateSelect}
+          />
+        );
+      })}
     </div>
   );
 };

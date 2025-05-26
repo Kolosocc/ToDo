@@ -10,17 +10,21 @@ import {
   startOfWeek,
 } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { Task } from '@/app/types/task';
+import CalendarMobileDayCell from './CalendarMobileDayCell';
 
 interface CalendarGridMobileProps {
   currentMonth: Date;
-  selectedDate: Date | null; // Updated to allow null
+  selectedDate: Date | null;
   onDateSelect: (date: Date | null) => void;
+  tasks: Task[]; // Добавляем проп для задач
 }
 
 const CalendarGridMobile: React.FC<CalendarGridMobileProps> = ({
   currentMonth,
   selectedDate,
   onDateSelect,
+  tasks,
 }) => {
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
@@ -28,12 +32,12 @@ const CalendarGridMobile: React.FC<CalendarGridMobileProps> = ({
   const endDate = endOfMonth(monthEnd);
   const weekdays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
-  const handleDateClick = (date: Date) => {
-    if (selectedDate && isSameDay(date, selectedDate)) {
-      onDateSelect(null); // Deselect on second click
-    } else {
-      onDateSelect(date);
-    }
+  const tasksByDate = (date: Date): Task[] => {
+    const targetDateStr = format(date, 'yyyy-MM-dd');
+    return tasks.filter((t) => {
+      const taskDateStr = format(new Date(t.createdAt), 'yyyy-MM-dd');
+      return taskDateStr === targetDateStr;
+    });
   };
 
   const days = [];
@@ -43,20 +47,14 @@ const CalendarGridMobile: React.FC<CalendarGridMobileProps> = ({
     for (let i = 0; i < 7; i++) {
       const cloneDay = day;
       days.push(
-        <button
+        <CalendarMobileDayCell
           key={cloneDay.toISOString()}
-          className={`p-2 text-sm rounded-full w-10 h-10
-            ${
-              selectedDate && isSameDay(cloneDay, selectedDate)
-                ? 'bg-blue-500 text-white'
-                : ''
-            }
-            ${!isSameMonth(cloneDay, monthStart) ? 'text-gray-400' : ''}
-            hover:bg-blue-100 dark:hover:bg-blue-900 transition`}
-          onClick={() => handleDateClick(cloneDay)}
-        >
-          {format(cloneDay, 'd', { locale: ru })}
-        </button>
+          day={cloneDay}
+          tasks={tasksByDate(cloneDay)}
+          isSelected={selectedDate ? isSameDay(cloneDay, selectedDate) : false}
+          isCurrentMonth={isSameMonth(cloneDay, monthStart)}
+          onDateSelect={onDateSelect}
+        />
       );
       day = addDays(day, 1);
     }
