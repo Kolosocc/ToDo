@@ -34,19 +34,16 @@ const CalendarGridDesktop: React.FC<CalendarGridDesktopProps> = ({
     const startDate = startOfWeek(monthStart, { weekStartsOn: 1 });
     const days: Date[] = [];
     for (let i = 0; i < 30; i++) {
-      // Покрываем до 5 недель
       days.push(addDays(startDate, i));
     }
     setCalendarDays(days);
   }, [currentMonth]);
 
   const tasksByDate = (date: Date): Task[] => {
-    // Форматируем дату в YYYY-MM-DD
     const targetDateStr = format(date, 'yyyy-MM-dd');
     const targetMonthStr = format(date, 'yyyy-MM');
 
     return tasks.filter((t) => {
-      // Извлекаем дату из createdAt
       const taskDate = new Date(t.createdAt);
       const taskDateStr = format(taskDate, 'yyyy-MM-dd');
       const taskMonthStr = format(taskDate, 'yyyy-MM');

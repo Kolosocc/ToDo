@@ -1,21 +1,7 @@
-// TaskCard.tsx
 'use client';
 
+import { TaskProps } from '@/app/types';
 import { FiTrash2, FiCheck, FiX, FiEdit, FiMenu } from 'react-icons/fi';
-import { Task } from '@/app/types/task';
-
-interface TaskProps {
-  task: Task;
-  index: number;
-  onToggleComplete: (id: string) => void;
-  onEdit: (task: Task) => void;
-  onDelete: (id: string) => void;
-  draggable?: boolean;
-  innerRef?: (element: HTMLElement | null) => void;
-  draggableProps?: any;
-  dragHandleProps?: any;
-  isDragging?: boolean;
-}
 
 export const TaskCard: React.FC<TaskProps> = ({
   task,

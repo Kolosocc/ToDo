@@ -1,17 +1,8 @@
 'use client';
 
-import { useState } from 'react';
 import CalendarGridMobile from '@/app/modules/calendar/CalendarGridMobile';
 import CalendarHeader from '@/app/modules/calendar/CalendarHeader';
-import { Task } from '@/app/types/task';
-
-interface CalendarMobileProps {
-  currentMonth: Date;
-  onMonthChange: (offset: number) => void;
-  selectedDate: Date | null; // Updated to allow null
-  onDateSelect: (date: Date | null) => void;
-  tasks: Task[];
-}
+import { CalendarMobileProps } from '@/app/types';
 
 const CalendarMobile: React.FC<CalendarMobileProps> = ({
   currentMonth,

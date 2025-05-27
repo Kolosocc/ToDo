@@ -9,7 +9,6 @@ import {
   endOfMonth,
   startOfWeek,
 } from 'date-fns';
-import { ru } from 'date-fns/locale';
 import { Task } from '@/app/types/task';
 import CalendarMobileDayCell from './CalendarMobileDayCell';
 
@@ -17,7 +16,7 @@ interface CalendarGridMobileProps {
   currentMonth: Date;
   selectedDate: Date | null;
   onDateSelect: (date: Date | null) => void;
-  tasks: Task[]; // Добавляем проп для задач
+  tasks: Task[];
 }
 
 const CalendarGridMobile: React.FC<CalendarGridMobileProps> = ({

@@ -1,17 +1,5 @@
 'use client';
-
-type FilterStatus = 'all' | 'completed' | 'pending';
-type SortType = 'date' | 'priority';
-
-interface FilterBarProps {
-  search: string;
-  status: FilterStatus;
-  sortType: SortType; // New prop for sort type
-  onSearchChange: (value: string) => void;
-  onStatusChange: (status: FilterStatus) => void;
-  onSortChange: (sortType: SortType) => void; // New prop for sort change
-  onCreateTask: () => void;
-}
+import { FilterBarProps, FilterStatus, SortType } from '../types';
 
 export const FilterBar: React.FC<FilterBarProps> = ({
   search,

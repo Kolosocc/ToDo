@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export function useIsDesktop(breakpoint = 1000) {
+export function useIsDesktop(breakpoint: number = 1000): boolean {
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {

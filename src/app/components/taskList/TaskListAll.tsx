@@ -1,6 +1,5 @@
 'use client';
 
-import { Task } from '@/app/types/task';
 import {
   Droppable,
   Draggable,
@@ -8,16 +7,7 @@ import {
   DropResult,
 } from '@hello-pangea/dnd';
 import TaskCard from './TaskCard';
-
-interface TaskListAllProps {
-  tasks: Task[];
-  sortType: 'date' | 'priority'; // Новый пропс для типа сортировки
-  status: 'all' | 'completed' | 'pending'; // Новый пропс для статуса фильтра
-  onToggleComplete: (id: string) => void;
-  onEdit: (task: Task) => void;
-  onDelete: (id: string) => void;
-  onUpdateTasks: (updatedTasks: Task[]) => void;
-}
+import { TaskListAllProps } from '@/app/types';
 
 export const TaskListAll: React.FC<TaskListAllProps> = ({
   tasks,
@@ -67,7 +57,6 @@ export const TaskListAll: React.FC<TaskListAllProps> = ({
     onUpdateTasks(updatedTasks);
   };
 
-  // Отключаем DND, если сортировка по дате или фильтр не 'all'
   if (sortType === 'date' || status !== 'all') {
     return (
       <div className='bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 h-full flex flex-col'>
@@ -81,7 +70,7 @@ export const TaskListAll: React.FC<TaskListAllProps> = ({
               onToggleComplete={onToggleComplete}
               onEdit={onEdit}
               onDelete={onDelete}
-              draggable={false} // Отключаем DND
+              draggable={false}
             />
           ))}
           {tasks.length === 0 && (
@@ -92,7 +81,6 @@ export const TaskListAll: React.FC<TaskListAllProps> = ({
     );
   }
 
-  // Рендерим с DND, если сортировка по приоритету и фильтр 'all'
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       <div className='bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 h-full flex flex-col'>

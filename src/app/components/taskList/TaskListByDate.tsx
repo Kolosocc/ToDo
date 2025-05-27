@@ -1,15 +1,6 @@
 'use client';
-
-import { Task } from '@/app/types/task';
 import TaskCard from './TaskCard';
-
-interface TaskListByDateProps {
-  tasks: Task[];
-  date: Date | null;
-  onToggleComplete: (id: string) => void;
-  onEdit: (task: Task) => void;
-  onDelete: (id: string) => void;
-}
+import { TaskListByDateProps } from '@/app/types';
 
 export const TaskListByDate: React.FC<TaskListByDateProps> = ({
   tasks,

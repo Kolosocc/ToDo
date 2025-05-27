@@ -3,15 +3,7 @@
 import { useIsDesktop } from '@/app/hooks/useIsDesktop';
 import CalendarDesktop from './CalendarDesktop';
 import CalendarMobile from './CalendarMobile';
-import { Task } from '@/app/types/task';
-
-interface CalendarProps {
-  selectedDate: Date | null;
-  onDateSelect: (date: Date | null) => void;
-  currentMonth: Date;
-  onMonthChange: (offset: number) => void;
-  tasks: Task[];
-}
+import { CalendarProps } from '@/app/types';
 
 const Calendar: React.FC<CalendarProps> = ({
   selectedDate,

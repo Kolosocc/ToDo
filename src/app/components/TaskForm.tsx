@@ -1,18 +1,6 @@
 'use client';
-
 import { motion, AnimatePresence } from 'framer-motion';
-import { Dispatch, SetStateAction } from 'react';
-
-interface TaskFormProps {
-  isOpen: boolean;
-  taskTitle: string;
-  taskDescription: string;
-  setTaskTitle: Dispatch<SetStateAction<string>>;
-  setTaskDescription: Dispatch<SetStateAction<string>>;
-  onSubmit: () => void;
-  onCancel: () => void;
-  isEditing?: boolean; // Indicates edit mode
-}
+import { TaskFormProps } from '../types';
 
 export const TaskForm: React.FC<TaskFormProps> = ({
   isOpen,

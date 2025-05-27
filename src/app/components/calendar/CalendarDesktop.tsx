@@ -2,16 +2,7 @@
 
 import CalendarGridDesktop from '@/app/modules/calendar/CalendarGridDesktop';
 import CalendarHeader from '@/app/modules/calendar/CalendarHeader';
-
-import { Task } from '@/app/types/task';
-
-interface CalendarDesktopProps {
-  currentMonth: Date;
-  tasks: Task[];
-  selectedDate: Date | null;
-  onDateSelect: (date: Date | null) => void;
-  onMonthChange: (offset: number) => void;
-}
+import { CalendarDesktopProps } from '@/app/types';
 
 const CalendarDesktop: React.FC<CalendarDesktopProps> = ({
   currentMonth,

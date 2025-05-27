@@ -7,24 +7,21 @@ import Calendar from './components/calendar/Calendar';
 import ThemeToggle from './components/ThemeToggle';
 import TaskForm from './components/TaskForm';
 import { loadTasks, saveTasks } from '@/lib/task';
-import { Task } from '@/app/types/task';
+import { Task, FilterStatus, SortType } from '@/app/types';
 import TaskListAll from './components/taskList/TaskListAll';
 import TaskListByDate from './components/taskList/TaskListByDate';
 import { useIsDesktop } from './hooks/useIsDesktop';
 
-type FilterStatus = 'all' | 'completed' | 'pending';
-type SortType = 'date' | 'priority';
-
 export default function Home() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-  const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [search, setSearch] = useState('');
+  const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
+  const [search, setSearch] = useState<string>('');
   const [status, setStatus] = useState<FilterStatus>('all');
   const [sortType, setSortType] = useState<SortType>('priority');
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [taskTitle, setTaskTitle] = useState('');
-  const [taskDescription, setTaskDescription] = useState('');
+  const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
+  const [taskTitle, setTaskTitle] = useState<string>('');
+  const [taskDescription, setTaskDescription] = useState<string>('');
   const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   useEffect(() => {
@@ -37,13 +34,13 @@ export default function Home() {
     saveTasks(tasks);
   }, [tasks]);
 
-  const handleMonthChange = (offset: number) => {
+  const handleMonthChange = (offset: number): void => {
     const newMonth = new Date(currentMonth);
     newMonth.setMonth(newMonth.getMonth() + offset);
     setCurrentMonth(newMonth);
   };
 
-  const handleCreateTask = () => {
+  const handleCreateTask = (): void => {
     if (!taskTitle.trim() || !selectedDate) return;
     const newId = uuidv4();
     if (tasks.some((task) => task.id === newId)) {
@@ -66,7 +63,7 @@ export default function Home() {
     setIsFormOpen(false);
   };
 
-  const handleEditTask = () => {
+  const handleEditTask = (): void => {
     if (!taskTitle.trim() || !editingTask) return;
     setTasks(
       tasks.map((task) =>
@@ -85,7 +82,7 @@ export default function Home() {
     setIsFormOpen(false);
   };
 
-  const handleToggleComplete = (id: string) => {
+  const handleToggleComplete = (id: string): void => {
     setTasks(
       tasks.map((task) =>
         task.id === id ? { ...task, completed: !task.completed } : task
@@ -93,18 +90,18 @@ export default function Home() {
     );
   };
 
-  const handleDeleteTask = (id: string) => {
+  const handleDeleteTask = (id: string): void => {
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
-  const handleOpenEdit = (task: Task) => {
+  const handleOpenEdit = (task: Task): void => {
     setEditingTask(task);
     setTaskTitle(task.title);
     setTaskDescription(task.description || '');
     setIsFormOpen(true);
   };
 
-  const filteredTasks = useMemo(() => {
+  const filteredTasks = useMemo<Task[]>(() => {
     let result = tasks
       .filter((task) => task.title.toLowerCase().includes(search.toLowerCase()))
       .filter((task) =>
@@ -118,11 +115,8 @@ export default function Home() {
     result = result.sort((a, b) => {
       if (sortType === 'priority') {
         return a.priority - b.priority;
-      } else {
-        return (
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
       }
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
 
     return result;

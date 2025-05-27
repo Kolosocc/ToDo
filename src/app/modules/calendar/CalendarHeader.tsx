@@ -25,7 +25,6 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
 
       <h2 className='text-lg font-semibold'>
         {format(currentMonth, 'MMMM yyyy', { locale: ru })}{' '}
-        {/* Отображаем месяц и год на русском */}
       </h2>
 
       <button
