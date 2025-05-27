@@ -1,7 +1,7 @@
 'use client';
 
 import { format } from 'date-fns';
-import { ru } from 'date-fns/locale'; // Русская локализация
+import { ru } from 'date-fns/locale';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
 interface CalendarHeaderProps {

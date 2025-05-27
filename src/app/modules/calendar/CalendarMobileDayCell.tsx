@@ -4,14 +4,7 @@ import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { Task } from '@/app/types/task';
-
-interface CalendarMobileDayCellProps {
-  day: Date;
-  tasks: Task[];
-  isSelected: boolean;
-  isCurrentMonth: boolean;
-  onDateSelect: (date: Date | null) => void;
-}
+import { CalendarMobileDayCellProps } from '@/app/types';
 
 const CalendarMobileDayCell: React.FC<CalendarMobileDayCellProps> = ({
   day,
