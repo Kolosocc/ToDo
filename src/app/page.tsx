@@ -41,7 +41,7 @@ export default function Home() {
   };
 
   const handleCreateTask = (): void => {
-    if (!taskTitle.trim() || !selectedDate) return;
+    if (!taskTitle.trim()) return;
     const newId = uuidv4();
     if (tasks.some((task) => task.id === newId)) {
       console.error('Duplicate task ID:', newId);
@@ -54,7 +54,7 @@ export default function Home() {
       title: taskTitle,
       description: taskDescription || undefined,
       completed: false,
-      createdAt: selectedDate.toISOString(),
+      createdAt: new Date().toISOString(),
       priority: maxPriority + 1,
     };
     setTasks([...tasks, newTask]);
