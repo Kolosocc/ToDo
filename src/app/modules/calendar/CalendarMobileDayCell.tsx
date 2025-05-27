@@ -1,6 +1,7 @@
 'use client';
 
-import { format, isSameDay } from 'date-fns';
+import { useEffect, useState } from 'react';
+import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { Task } from '@/app/types/task';
 
@@ -19,6 +20,15 @@ const CalendarMobileDayCell: React.FC<CalendarMobileDayCellProps> = ({
   isCurrentMonth,
   onDateSelect,
 }) => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const match = window.matchMedia('(prefers-color-scheme: dark)');
+      setIsDarkMode(match.matches);
+    }
+  }, []);
+
   let inlineStyle: React.CSSProperties = {
     padding: '0.5rem',
     fontSize: '0.875rem',
@@ -44,15 +54,9 @@ const CalendarMobileDayCell: React.FC<CalendarMobileDayCellProps> = ({
   } else if (tasks.length === 0) {
     inlineStyle = {
       ...inlineStyle,
-      borderColor: window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? '#4b5563' // gray-700
-        : '#d1d5db', // gray-300
+      borderColor: isDarkMode ? '#4b5563' : '#d1d5db', // gray-700 / gray-300
       backgroundColor: 'transparent',
-      ['--hover-bg' as string]: window.matchMedia(
-        '(prefers-color-scheme: dark)'
-      ).matches
-        ? '#1e3a8a' // dark:hover:bg-blue-900
-        : '#dbeafe', // hover:bg-blue-100
+      ['--hover-bg' as string]: isDarkMode ? '#1e3a8a' : '#dbeafe', // hover color
     };
   } else if (tasks.length === 1) {
     const task = tasks[0];
@@ -62,6 +66,7 @@ const CalendarMobileDayCell: React.FC<CalendarMobileDayCellProps> = ({
         backgroundColor: 'var(--hover-bg, #16a34a)', // green-600
         borderColor: '#16a34a',
         ['--hover-bg' as string]: '#15803d', // hover:bg-green-700
+        color: '#ffffff',
       };
     } else {
       inlineStyle = {
@@ -69,6 +74,7 @@ const CalendarMobileDayCell: React.FC<CalendarMobileDayCellProps> = ({
         backgroundColor: 'var(--hover-bg, #eab308)', // yellow-500
         borderColor: '#eab308',
         ['--hover-bg' as string]: '#ca8a04', // hover:bg-yellow-600
+        color: '#000000',
       };
     }
   } else {
@@ -76,28 +82,13 @@ const CalendarMobileDayCell: React.FC<CalendarMobileDayCellProps> = ({
     const percentCompleted = Math.round((completedCount / tasks.length) * 100);
     const percentNotCompleted = 100 - percentCompleted;
 
-    if (percentCompleted === 100) {
-      inlineStyle = {
-        ...inlineStyle,
-        backgroundColor: 'var(--hover-bg, #16a34a)', // green-600
-        borderColor: '#16a34a',
-        ['--hover-bg' as string]: '#15803d', // hover:bg-green-700
-      };
-    } else if (percentNotCompleted === 100) {
-      inlineStyle = {
-        ...inlineStyle,
-        backgroundColor: 'var(--hover-bg, #eab308)', // yellow-500
-        borderColor: '#eab308',
-        ['--hover-bg' as string]: '#ca8a04', // hover:bg-yellow-600
-      };
-    } else {
-      inlineStyle = {
-        ...inlineStyle,
-        background: `linear-gradient(135deg, #facc15 ${percentNotCompleted}%, #16a34a ${percentNotCompleted}%)`,
-        borderColor: '#eab308',
-        ['--hover-opacity' as string]: '0.9',
-      };
-    }
+    inlineStyle = {
+      ...inlineStyle,
+      background: `linear-gradient(135deg, #facc15 ${percentNotCompleted}%, #16a34a ${percentNotCompleted}%)`, // yellow to green
+      borderColor: '#eab308',
+      ['--hover-opacity' as string]: '0.9',
+      color: '#ffffff',
+    };
   }
 
   const handleClick = () => {

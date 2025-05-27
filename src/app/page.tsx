@@ -11,6 +11,7 @@ import { Task } from '@/app/types/task';
 import TaskListAll from './components/taskList/TaskListAll';
 import TaskListByDate from './components/taskList/TaskListByDate';
 import { useIsDesktop } from './hooks/useIsDesktop';
+import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 
 type FilterStatus = 'all' | 'completed' | 'pending';
 
@@ -26,7 +27,9 @@ export default function Home() {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   useEffect(() => {
-    setTasks(loadTasks());
+    const loadedTasks = loadTasks();
+    console.log('Loaded tasks:', loadedTasks);
+    setTasks(loadedTasks);
   }, []);
 
   useEffect(() => {
@@ -41,14 +44,19 @@ export default function Home() {
 
   const handleCreateTask = () => {
     if (!taskTitle.trim() || !selectedDate) return;
+    const newId = uuidv4();
+    if (tasks.some((task) => task.id === newId)) {
+      console.error('Duplicate task ID:', newId);
+      return;
+    }
     const maxPriority =
       tasks.length > 0 ? Math.max(...tasks.map((task) => task.priority)) : 0;
     const newTask: Task = {
-      id: uuidv4(),
+      id: newId,
       title: taskTitle,
       description: taskDescription || undefined,
       completed: false,
-      createdAt: selectedDate.toISOString(), //TODO new Data
+      createdAt: selectedDate.toISOString(),
       priority: maxPriority + 1,
     };
     setTasks([...tasks, newTask]);
@@ -95,6 +103,65 @@ export default function Home() {
     setIsFormOpen(true);
   };
 
+  const handleDragEnd = (result: DropResult) => {
+    const { source, destination, draggableId } = result;
+    if (!destination) return;
+    if (
+      source.droppableId !== 'task-list' ||
+      destination.droppableId !== 'task-list'
+    )
+      return;
+    if (source.index === destination.index) return;
+
+    console.log('Drag result:', { source, destination, draggableId });
+
+    // Копируем отфильтрованные задачи
+    const reorderedTasks = [...filteredTasks];
+    // Находим перемещаемую задачу
+    const movedTaskIndex = reorderedTasks.findIndex(
+      (task) => task.id === draggableId
+    );
+    if (movedTaskIndex === -1) return;
+    const [movedTask] = reorderedTasks.splice(movedTaskIndex, 1);
+
+    // Вставляем задачу в новую позицию
+    reorderedTasks.splice(destination.index, 0, movedTask);
+
+    // Обновляем приоритеты
+    const updatedFilteredTasks = reorderedTasks.map((task, index) => ({
+      ...task,
+      priority: index + 1,
+    }));
+
+    // Обновляем основной массив задач
+    const finalTasks = tasks.map((task) => {
+      const updatedTask = updatedFilteredTasks.find((t) => t.id === task.id);
+      return updatedTask || task;
+    });
+
+    // Присваиваем приоритеты для нефильтрованных задач
+    const nonFilteredTasks = finalTasks
+      .filter((task) => !updatedFilteredTasks.some((t) => t.id === task.id))
+      .map((task, index) => ({
+        ...task,
+        priority: updatedFilteredTasks.length + index + 1,
+      }));
+
+    const uniqueFinalTasks = [...updatedFilteredTasks, ...nonFilteredTasks];
+
+    console.log(
+      'Final tasks:',
+      uniqueFinalTasks.map((t) => ({
+        id: t.id,
+        title: t.title,
+        priority: t.priority,
+        createdAt: t.createdAt,
+      }))
+    );
+
+    setTasks(uniqueFinalTasks);
+  };
+
   const filteredTasks = tasks
     .filter((task) => task.title.toLowerCase().includes(search.toLowerCase()))
     .filter((task) =>
@@ -103,86 +170,89 @@ export default function Home() {
         : status === 'completed'
         ? task.completed
         : !task.completed
-    );
+    )
+    .sort((a, b) => a.priority - b.priority);
 
   const isDesktop = useIsDesktop();
 
   return (
-    <div className='min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300'>
-      <div className='container mx-auto p-4'>
-        <div className='flex justify-between items-center mb-6 gap-4'>
-          <FilterBar
-            search={search}
-            status={status}
-            onSearchChange={setSearch}
-            onStatusChange={setStatus}
-            onCreateTask={() => {
-              setEditingTask(null);
+    <DragDropContext onDragEnd={handleDragEnd}>
+      <div className='min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300'>
+        <div className='container mx-auto p-4'>
+          <div className='flex justify-between items-center mb-6 gap-4'>
+            <FilterBar
+              search={search}
+              status={status}
+              onSearchChange={setSearch}
+              onStatusChange={setStatus}
+              onCreateTask={() => {
+                setEditingTask(null);
+                setTaskTitle('');
+                setTaskDescription('');
+                setIsFormOpen(true);
+              }}
+            />
+            <ThemeToggle />
+          </div>
+
+          <TaskForm
+            isOpen={isFormOpen}
+            taskTitle={taskTitle}
+            taskDescription={taskDescription}
+            setTaskTitle={setTaskTitle}
+            setTaskDescription={setTaskDescription}
+            onSubmit={editingTask ? handleEditTask : handleCreateTask}
+            onCancel={() => {
               setTaskTitle('');
               setTaskDescription('');
-              setIsFormOpen(true);
+              setEditingTask(null);
+              setIsFormOpen(false);
             }}
+            isEditing={!!editingTask}
           />
-          <ThemeToggle />
-        </div>
 
-        <TaskForm
-          isOpen={isFormOpen}
-          taskTitle={taskTitle}
-          taskDescription={taskDescription}
-          setTaskTitle={setTaskTitle}
-          setTaskDescription={setTaskDescription}
-          onSubmit={editingTask ? handleEditTask : handleCreateTask}
-          onCancel={() => {
-            setTaskTitle('');
-            setTaskDescription('');
-            setEditingTask(null);
-            setIsFormOpen(false);
-          }}
-          isEditing={!!editingTask}
-        />
-
-        <div className='flex flex-col lg:flex-row gap-4 h-full'>
-          <div className='lg:w-1/3 h-full overflow-y-auto'>
-            {isDesktop && selectedDate ? (
-              <TaskListAll
-                tasks={filteredTasks}
-                onToggleComplete={handleToggleComplete}
-                onEdit={handleOpenEdit}
-                onDelete={handleDeleteTask}
-              />
-            ) : (
-              <TaskListByDate
-                tasks={filteredTasks}
-                date={selectedDate}
-                onToggleComplete={handleToggleComplete}
-                onEdit={handleOpenEdit}
-                onDelete={handleDeleteTask}
-              />
-            )}
-          </div>
-          <div className='flex lg:flex-col lg:w-2/3 h-full'>
-            <div className='bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 flex-1 mb-4'>
-              <Calendar
-                selectedDate={selectedDate}
-                onDateSelect={setSelectedDate}
-                currentMonth={currentMonth}
-                onMonthChange={handleMonthChange}
-                tasks={filteredTasks}
-              />
+          <div className='flex flex-col lg:flex-row gap-4 h-full'>
+            <div className='lg:w-1/3 h-full overflow-y-auto'>
+              {isDesktop && selectedDate ? (
+                <TaskListAll
+                  tasks={filteredTasks}
+                  onToggleComplete={handleToggleComplete}
+                  onEdit={handleOpenEdit}
+                  onDelete={handleDeleteTask}
+                />
+              ) : (
+                <TaskListByDate
+                  tasks={filteredTasks}
+                  date={selectedDate}
+                  onToggleComplete={handleToggleComplete}
+                  onEdit={handleOpenEdit}
+                  onDelete={handleDeleteTask}
+                />
+              )}
             </div>
-            <div className='hidden lg:block'>
-              <TaskListByDate
-                tasks={filteredTasks}
-                date={selectedDate}
-                onToggleComplete={handleToggleComplete}
-                onEdit={handleOpenEdit}
-                onDelete={handleDeleteTask}
-              />
+            <div className='flex lg:flex-col lg:w-2/3 h-full'>
+              <div className='bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 flex-1 mb-4'>
+                <Calendar
+                  selectedDate={selectedDate}
+                  onDateSelect={setSelectedDate}
+                  currentMonth={currentMonth}
+                  onMonthChange={handleMonthChange}
+                  tasks={filteredTasks}
+                />
+              </div>
+              <div className='hidden lg:block'>
+                <TaskListByDate
+                  tasks={filteredTasks}
+                  date={selectedDate}
+                  onToggleComplete={handleToggleComplete}
+                  onEdit={handleOpenEdit}
+                  onDelete={handleDeleteTask}
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </DragDropContext>
   );
 }

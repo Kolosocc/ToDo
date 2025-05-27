@@ -2,28 +2,35 @@
 
 import { FiTrash2, FiCheck, FiX, FiEdit } from 'react-icons/fi';
 import { Task } from '@/app/types/task';
+import { Draggable } from '@hello-pangea/dnd';
 
 interface TaskListProps {
   task: Task;
-
+  index: number;
   onToggleComplete: (id: string) => void;
   onEdit: (task: Task) => void;
   onDelete: (id: string) => void;
+  draggable?: boolean; // Optional prop to enable/disable drag
 }
 
 export const TaskList: React.FC<TaskListProps> = ({
   task,
-
+  index,
   onToggleComplete,
   onEdit,
   onDelete,
+  draggable = true,
 }) => {
-  return (
-    <li key={task.id} className={`mb-2 shadow-md`}>
+  const content = (
+    <li
+      className={`mb-2 shadow-md transition-opacity ${
+        draggable ? 'cursor-move' : ''
+      }`}
+    >
       <div className='flex items-center justify-between'>
         <div>
           <div className='flex items-center mb-1'>
-            <h4 className=' text-gray-800 dark:text-gray-200 mr-2'>
+            <h4 className='text-gray-800 dark:text-gray-200 mr-2'>
               {task.priority}
             </h4>
             <h3 className='font-semibold'>{task.title}</h3>
@@ -61,6 +68,25 @@ export const TaskList: React.FC<TaskListProps> = ({
         </div>
       </div>
     </li>
+  );
+
+  return draggable ? (
+    <Draggable draggableId={task.id} index={index}>
+      {(provided, snapshot) => (
+        <div
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          className={
+            snapshot.isDragging ? 'opacity-75 bg-gray-200 dark:bg-gray-700' : ''
+          }
+        >
+          {content}
+        </div>
+      )}
+    </Draggable>
+  ) : (
+    content
   );
 };
 
