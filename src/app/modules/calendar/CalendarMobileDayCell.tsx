@@ -41,39 +41,39 @@ const CalendarMobileDayCell: React.FC<CalendarMobileDayCellProps> = ({
     borderWidth: '1px',
     opacity: isCurrentMonth ? 1 : 0.4,
     transition: 'background-color 0.2s, border-color 0.2s, opacity 0.2s',
-    color: isCurrentMonth ? 'inherit' : '#9ca3af', // gray-400
+    color: isCurrentMonth ? 'inherit' : '#9ca3af',
   };
 
   if (isSelected) {
     inlineStyle = {
       ...inlineStyle,
-      backgroundColor: '#3b82f6', // blue-500
+      backgroundColor: '#3b82f6',
       borderColor: '#3b82f6',
       color: '#ffffff',
     };
   } else if (tasks.length === 0) {
     inlineStyle = {
       ...inlineStyle,
-      borderColor: isDarkMode ? '#4b5563' : '#d1d5db', // gray-700 / gray-300
+      borderColor: isDarkMode ? '#4b5563' : '#d1d5db',
       backgroundColor: 'transparent',
-      ['--hover-bg' as string]: isDarkMode ? '#1e3a8a' : '#dbeafe', // hover color
+      ['--hover-bg' as string]: isDarkMode ? '#1e3a8a' : '#dbeafe',
     };
   } else if (tasks.length === 1) {
     const task = tasks[0];
     if (task.completed) {
       inlineStyle = {
         ...inlineStyle,
-        backgroundColor: 'var(--hover-bg, #16a34a)', // green-600
+        backgroundColor: 'var(--hover-bg, #16a34a)',
         borderColor: '#16a34a',
-        ['--hover-bg' as string]: '#15803d', // hover:bg-green-700
+        ['--hover-bg' as string]: '#15803d',
         color: '#ffffff',
       };
     } else {
       inlineStyle = {
         ...inlineStyle,
-        backgroundColor: 'var(--hover-bg, #eab308)', // yellow-500
+        backgroundColor: 'var(--hover-bg, #eab308)',
         borderColor: '#eab308',
-        ['--hover-bg' as string]: '#ca8a04', // hover:bg-yellow-600
+        ['--hover-bg' as string]: '#ca8a04',
         color: '#000000',
       };
     }
@@ -84,7 +84,7 @@ const CalendarMobileDayCell: React.FC<CalendarMobileDayCellProps> = ({
 
     inlineStyle = {
       ...inlineStyle,
-      background: `linear-gradient(135deg, #facc15 ${percentNotCompleted}%, #16a34a ${percentNotCompleted}%)`, // yellow to green
+      background: `linear-gradient(135deg, #facc15 ${percentNotCompleted}%, #16a34a ${percentNotCompleted}%)`,
       borderColor: '#eab308',
       ['--hover-opacity' as string]: '0.9',
       color: '#ffffff',

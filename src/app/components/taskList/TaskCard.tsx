@@ -1,43 +1,60 @@
+// TaskCard.tsx
 'use client';
 
-import { FiTrash2, FiCheck, FiX, FiEdit } from 'react-icons/fi';
+import { FiTrash2, FiCheck, FiX, FiEdit, FiMenu } from 'react-icons/fi';
 import { Task } from '@/app/types/task';
-import { Draggable } from '@hello-pangea/dnd';
 
-interface TaskListProps {
+interface TaskProps {
   task: Task;
   index: number;
   onToggleComplete: (id: string) => void;
   onEdit: (task: Task) => void;
   onDelete: (id: string) => void;
-  draggable?: boolean; // Optional prop to enable/disable drag
+  draggable?: boolean;
+  innerRef?: (element: HTMLElement | null) => void;
+  draggableProps?: any;
+  dragHandleProps?: any;
+  isDragging?: boolean;
 }
 
-export const TaskList: React.FC<TaskListProps> = ({
+export const TaskCard: React.FC<TaskProps> = ({
   task,
   index,
   onToggleComplete,
   onEdit,
   onDelete,
-  draggable = true,
+  draggable = false,
+  innerRef,
+  draggableProps,
+  dragHandleProps,
+  isDragging,
 }) => {
-  const content = (
+  return (
     <li
-      className={`mb-2 shadow-md transition-opacity ${
-        draggable ? 'cursor-move' : ''
-      }`}
+      ref={innerRef}
+      {...draggableProps}
+      className={`mb-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md transition-opacity ${
+        draggable ? 'cursor-default' : ''
+      } ${isDragging ? 'opacity-75 bg-gray-200 dark:bg-gray-700' : ''}`}
     >
       <div className='flex items-center justify-between'>
-        <div>
-          <div className='flex items-center mb-1'>
-            <h4 className='text-gray-800 dark:text-gray-200 mr-2'>
-              {task.priority}
-            </h4>
-            <h3 className='font-semibold'>{task.title}</h3>
+        <div className='flex items-center'>
+          {draggable && (
+            <div {...dragHandleProps} className='mr-2 cursor-move'>
+              <FiMenu size={20} className='text-gray-500 dark:text-gray-400' />
+            </div>
+          )}
+          <div>
+            <div className='flex items-center mb-1'>
+              <h4 className='text-gray-800 dark:text-gray-200 mr-2'>
+                {task.priority}
+              </h4>
+              <h3 className='font-semibold'>{task.title}</h3>
+            </div>
+            <p className='text-sm text-gray-600 dark:text-gray-400'>
+              {task.description || 'Без описания'}
+            </p>
           </div>
-          <p className='text-sm text-gray-600 dark:text-gray-400'>
-            {task.description || 'Без описания'}
-          </p>
         </div>
         <div className='flex gap-2'>
           <button
@@ -69,25 +86,6 @@ export const TaskList: React.FC<TaskListProps> = ({
       </div>
     </li>
   );
-
-  return draggable ? (
-    <Draggable draggableId={task.id} index={index}>
-      {(provided, snapshot) => (
-        <div
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          className={
-            snapshot.isDragging ? 'opacity-75 bg-gray-200 dark:bg-gray-700' : ''
-          }
-        >
-          {content}
-        </div>
-      )}
-    </Draggable>
-  ) : (
-    content
-  );
 };
 
-export default TaskList;
+export default TaskCard;

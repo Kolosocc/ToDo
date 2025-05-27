@@ -1,7 +1,7 @@
 'use client';
 
 import { Task } from '@/app/types/task';
-import TaskList from './TaskList';
+import TaskCard from './TaskCard';
 
 interface TaskListByDateProps {
   tasks: Task[];
@@ -46,14 +46,13 @@ export const TaskListByDate: React.FC<TaskListByDateProps> = ({
       <div className='h-full'>
         <ul className='overflow-y-auto'>
           {filteredTasks.map((task, index) => (
-            <TaskList
+            <TaskCard
               key={task.id}
               task={task}
               index={index}
               onToggleComplete={onToggleComplete}
               onEdit={onEdit}
               onDelete={onDelete}
-              draggable={false} // Disable drag-and-drop
             />
           ))}
           {filteredTasks.length === 0 && (
