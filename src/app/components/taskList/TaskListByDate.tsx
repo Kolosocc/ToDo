@@ -9,7 +9,6 @@ interface TaskListByDateProps {
   onToggleComplete: (id: string) => void;
   onEdit: (task: Task) => void;
   onDelete: (id: string) => void;
-  isFormOpen: boolean;
 }
 
 export const TaskListByDate: React.FC<TaskListByDateProps> = ({
@@ -18,18 +17,43 @@ export const TaskListByDate: React.FC<TaskListByDateProps> = ({
   onToggleComplete,
   onEdit,
   onDelete,
-  isFormOpen,
 }) => {
+  const filteredTasks = date
+    ? tasks.filter(
+        (task) =>
+          new Date(task.createdAt).toDateString() === date.toDateString()
+      )
+    : tasks;
+
   return (
-    <div className='h-full'>
-      <TaskList
-        tasks={tasks}
-        date={date}
-        onToggleComplete={onToggleComplete}
-        onEdit={onEdit}
-        onDelete={onDelete}
-        isFormOpen={isFormOpen}
-      />
+    <div className='bg-white dark:bg-gray-800 rounded-lg shadow-md p-4  h-full'>
+      <h2 className='text-lg font-semibold mb-2'>{`Задачи на ${
+        date &&
+        date.toLocaleDateString('ru-RU', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+        })
+      }`}</h2>
+      <div className='h-full'>
+        <ul className='overflow-y-auto'>
+          {filteredTasks.map((task) => (
+            <TaskList
+              key={task.id}
+              task={task}
+              onToggleComplete={onToggleComplete}
+              onEdit={onEdit}
+              onDelete={onDelete}
+            />
+          ))}
+
+          {filteredTasks.length === 0 && (
+            <p className='text-gray-500 dark:text-gray-400'>
+              {date && `Нет задач на ${date.toLocaleDateString('ru-RU')}`}
+            </p>
+          )}
+        </ul>
+      </div>
     </div>
   );
 };

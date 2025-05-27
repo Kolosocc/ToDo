@@ -35,41 +35,41 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({
   if (isSelected) {
     inlineStyle = {
       ...inlineStyle,
-      borderColor: '#3b82f6', // blue-500
+      borderColor: '#3b82f6',
       backgroundColor: window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? '#1e3a8a' // blue-900
-        : '#eff6ff', // blue-50
+        ? '#1e3a8a'
+        : '#eff6ff',
     };
   } else if (tasks.length === 0) {
     inlineStyle = {
       ...inlineStyle,
       borderColor: window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? '#4b5563' // gray-700
-        : '#d1d5db', // gray-300
+        ? '#4b5563'
+        : '#d1d5db',
       backgroundColor: 'transparent',
       ['--hover-bg' as string]: window.matchMedia(
         '(prefers-color-scheme: dark)'
       ).matches
-        ? '#1e3a8a' // dark:hover:bg-blue-900
-        : '#dbeafe', // hover:bg-blue-100
-      ['--hover-border' as string]: '#60a5fa', // hover:border-blue-400
+        ? '#1e3a8a'
+        : '#dbeafe',
+      ['--hover-border' as string]: '#60a5fa',
     };
   } else if (tasks.length === 1) {
     const task = tasks[0];
     if (task.completed) {
       inlineStyle = {
         ...inlineStyle,
-        backgroundColor: 'var(--hover-bg, #16a34a)', // green-600
-        borderColor: '#16a34a', // green-600
-        ['--hover-bg' as string]: '#15803d', // hover:bg-green-700
+        backgroundColor: 'var(--hover-bg, #16a34a)',
+        borderColor: '#16a34a',
+        ['--hover-bg' as string]: '#15803d',
       };
       displayText = task.title;
     } else {
       inlineStyle = {
         ...inlineStyle,
-        backgroundColor: 'var(--hover-bg, #eab308)', // yellow-500
-        borderColor: '#eab308', // yellow-500
-        ['--hover-bg' as string]: '#ca8a04', // hover:bg-yellow-600
+        backgroundColor: 'var(--hover-bg, #eab308)',
+        borderColor: '#eab308',
+        ['--hover-bg' as string]: '#ca8a04',
       };
       displayText = task.title;
     }
@@ -81,25 +81,25 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({
     if (percentCompleted === 100) {
       inlineStyle = {
         ...inlineStyle,
-        backgroundColor: 'var(--hover-bg, #16a34a)', // green-600
-        borderColor: '#16a34a', // green-600
-        ['--hover-bg' as string]: '#15803d', // hover:bg-green-700
+        backgroundColor: 'var(--hover-bg, #16a34a)',
+        borderColor: '#16a34a',
+        ['--hover-bg' as string]: '#15803d',
       };
       displayText = 'Много задач';
     } else if (percentNotCompleted === 100) {
       inlineStyle = {
         ...inlineStyle,
-        backgroundColor: 'var(--hover-bg, #eab308)', // yellow-500
-        borderColor: '#eab308', // yellow-500
-        ['--hover-bg' as string]: '#ca8a04', // hover:bg-yellow-600
+        backgroundColor: 'var(--hover-bg, #eab308)',
+        borderColor: '#eab308',
+        ['--hover-bg' as string]: '#ca8a04',
       };
       displayText = 'Много задач';
     } else {
       inlineStyle = {
         ...inlineStyle,
         background: `linear-gradient(135deg, #facc15 ${percentNotCompleted}%, #16a34a ${percentNotCompleted}%)`,
-        borderColor: '#eab308', // yellow-500
-        ['--hover-opacity' as string]: '0.9', // hover:opacity-90
+        borderColor: '#eab308',
+        ['--hover-opacity' as string]: '0.9',
       };
       displayText = 'Много задач';
     }

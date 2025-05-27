@@ -48,7 +48,7 @@ export default function Home() {
       title: taskTitle,
       description: taskDescription || undefined,
       completed: false,
-      createdAt: selectedDate.toISOString(),
+      createdAt: selectedDate.toISOString(), //TODO new Data
       priority: maxPriority + 1,
     };
     setTasks([...tasks, newTask]);
@@ -150,7 +150,6 @@ export default function Home() {
                 onToggleComplete={handleToggleComplete}
                 onEdit={handleOpenEdit}
                 onDelete={handleDeleteTask}
-                isFormOpen={isFormOpen}
               />
             ) : (
               <TaskListByDate
@@ -159,7 +158,6 @@ export default function Home() {
                 onToggleComplete={handleToggleComplete}
                 onEdit={handleOpenEdit}
                 onDelete={handleDeleteTask}
-                isFormOpen={isFormOpen}
               />
             )}
           </div>
@@ -180,7 +178,6 @@ export default function Home() {
                 onToggleComplete={handleToggleComplete}
                 onEdit={handleOpenEdit}
                 onDelete={handleDeleteTask}
-                isFormOpen={isFormOpen}
               />
             </div>
           </div>
